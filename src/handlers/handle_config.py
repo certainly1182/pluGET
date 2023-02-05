@@ -24,6 +24,8 @@ class config_value():
 		self.local_seperate_download_path = True if data["Local"]["SeperateDownloadPath"] == True else False
 		self.local_path_to_seperate_download_path = Path(data["Local"]["PathToSeperateDownloadPath"])
 		self.server = data["Remote"]["Server"]
+		self.use_key_file = True if data["Remote"]["UseKeyFile"] == True else False
+		self.key_file = Path(data["Remote"]["PathToKeyFile"])
 		self.username = data["Remote"]["Username"]
 		self.password = data["Remote"]["Password"]
 		self.sftp_port = int(data["Remote"]["SFTP_Port"])
@@ -105,5 +107,12 @@ def validate_config() -> None:
 		console.print(f"Error in Config! Accepted values for key 'Connection' are {accepted_values[0]}",
 		style="bright_red")
 		exit_afterwards = True
+	
+	# check keyfile
+	if config.use_key_file:
+		if not os.path.isfile(config.key_file):
+			console.print(f"Error in Config! Key file '{config.key_file}' does not exist.")
+			exit_afterwards = True
+
 	if exit_afterwards:
 		sys.exit()
